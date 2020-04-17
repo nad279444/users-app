@@ -1,7 +1,7 @@
 import React from 'react';
 import "./App.css"
 import { connect ,} from  'react-redux'
-import { addUser} from './store/userAction.js'
+import { addUser,removeUser} from './store/userAction.js'
 import UserInfo from "./components/UserInfo.jsx"
 import UserForm from "./components/UserForm.jsx"
 
@@ -12,19 +12,26 @@ class App extends React.Component{
   
 
   }
+
+  removeUser = (user_id) => {
+    this.props.removeUser(user_id)
+  }
   
   render(){
     return(
       <div className="App">
         <UserForm addUser={this.addNewUser} />
         <div className="App_user-info">
-          {this.props.users.map((item,index) => {
+          {this.props.users.map((item) => {
             return(
               <UserInfo
-              key={index}
+              key={item.id}
+              id={item.id}
               name={item.name}
               email={item.email}
-              gen={item.gen}/>
+              gen={item.gen}
+              rejectUser={this.removeUser}
+              />
             );
           })}
           </div>
@@ -34,10 +41,12 @@ class App extends React.Component{
 }
 const mapStateToProps = (state) =>({
   users: state.users
+  
 })
 
 const mapDispatchToProps = {
-  addUser
+  addUser,
+  removeUser
 }
 
 
