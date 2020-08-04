@@ -1,9 +1,10 @@
 import React from 'react';
 import "./App.css"
 import { connect ,} from  'react-redux'
-import { addUser,removeUser} from './store/userAction.js'
+import { addUser,removeUser,getAllUsers} from './store/userAction.js'
 import UserInfo from "./components/UserInfo.jsx"
 import UserForm from "./components/UserForm.jsx"
+
 
 
 class App extends React.Component{
@@ -17,10 +18,15 @@ class App extends React.Component{
     this.props.removeUser(user_id)
   }
   
+  componentDidMount(){
+    this.props.getAllUsers()
+  }
   render(){
+    console.log(this.props)
     return(
       <div className="App">
         <UserForm addUser={this.addNewUser} />
+        
         <div className="App_user-info">
           {this.props.users.map((item) => {
             return(
@@ -46,7 +52,8 @@ const mapStateToProps = (state) =>({
 
 const mapDispatchToProps = {
   addUser,
-  removeUser
+  removeUser,
+  getAllUsers
 }
 
 

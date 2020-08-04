@@ -1,16 +1,29 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import * as serviceWorker from './serviceWorker';
-import { createStore,applyMiddleware} from "redux"
-import userReducer from"./store/userReducer"
-import thunk from 'redux-thunk'
-import {Provider} from 'react-redux'
-import Router from './Router.js'
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import * as serviceWorker from "./serviceWorker";
+import { createStore, applyMiddleware, compose } from "redux";
+import userReducer from "./store/userReducer";
+import thunk from "redux-thunk";
+import { Provider } from "react-redux";
+import Router from "./Router.js";
+import { getFirebase, reduxReactFirebase } from "react-redux-firebase";
+import { getFirestore, reduxFirestore } from "redux-firestore";
+import firebase from './store/Firebase/config'
 
-const store = createStore(userReducer, applyMiddleware(thunk))
+const store = createStore(
+  userReducer,
+  compose(
+  applyMiddleware(thunk.withExtraArgument({getFirebase,getFirestore})),
+  reduxFirestore(firebase, reduxReactFirebase(firebase)))
+);
 
-ReactDOM.render(<Provider store={store}><Router/></Provider>, document.getElementById('root'));
+ReactDOM.render(
+  <Provider store={store}>
+    <Router />
+  </Provider>,
+  document.getElementById("root")
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

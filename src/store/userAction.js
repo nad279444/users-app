@@ -1,21 +1,45 @@
 export const addUser = (user) => {
-    return{
-        type:'ADD_USER',
-        payload:  user
-    }
-}
+  return (dispatch, state, { getFirestore }) => {
+    getFirestore()
+      .collection("users")
+      .add({...user,timestamp: getFirestore().FieldValue.serverTimestamp()})
+      .then(() => {});
+  };
+};
 export const removeUser = (user_id) => {
-    return{
-        type:'REMOVE_USER',
-        payload:  user_id
-    }
-}
- 
-export const editUser = (user_id,updatedInfo) => {
-    return{
-        type:'EDIT_USER',
-        user_id,
-        updatedInfo
-    }
-}
- 
+  return (dispatch, state, { getFirestore }) => {
+    getFirestore()
+      .collection("users")
+      .doc(user_id)
+      .delete()
+      .then(() => {});
+  };
+};
+
+export const editUser = (user_id, updatedInfo) => {
+  return (dispatch, state, { getFirestore }) => {
+    getFirestore().collection("users").doc(user_id).set(updatedInfo);
+  };
+};
+
+export const getAllUsers = () => {
+  return (dispatch, state, { getFirestore }) => {
+    getFirestore()
+      .collection("users")
+      .orderBy("timestamp","desc")
+      .onSnapshot(
+        (snapshot) => {
+          let users = [];
+          snapshot.forEach((doc) => {
+            users.push({ ...doc.data(), id: doc.id });
+          });
+          console.log(users);
+          dispatch({
+            type: "SET_ALL_USERS",
+            payload: users,
+          });
+        },
+        () => {}
+      );
+  };
+};
